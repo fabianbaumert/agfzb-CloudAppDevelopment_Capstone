@@ -22,7 +22,7 @@ def static_template_view(request):
 # def about(request):
 # ...
 def about_view(request):
-    return render(request, 'djangoapp/about.html')
+    return render(request, 'djangoapp/about.html') 
 
 
 # Create a `contact` view to return a static contact page
