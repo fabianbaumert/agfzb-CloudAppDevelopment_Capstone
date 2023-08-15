@@ -33,14 +33,67 @@ def contact_view(request):
 # Create a `login_request` view to handle sign in request
 # def login_request(request):
 # ...
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+
+def login_request(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('djangoapp:index')  # Redirect to the index page after login
+        else:
+            messages.error(request, 'Invalid credentials. Please try again.')
+    return redirect('djangoapp:index')  # Redirect to the index page in case of GET request
+
 
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
 # ...
+from django.contrib.auth import logout
+
+def logout_request(request):
+    logout(request)
+    return redirect('djangoapp:index')  # Redirect to the index page after logout
+
 
 # Create a `registration_request` view to handle sign up request
 # def registration_request(request):
 # ...
+def registration_request(request):
+    return render(request, 'djangoapp/registration.html')
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
+
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+
+def signup(request):
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        # Create user
+        user = User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name)
+        
+        # Log the user in
+        login(request, user)
+        
+        # Redirect to the desired page (replace 'djangoapp:index' with your actual index page URL)
+        return redirect('djangoapp:index')
+    
+    return render(request, 'djangoapp:index')
+
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
