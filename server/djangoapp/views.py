@@ -3,12 +3,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import CarDealer, DealerReview
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from django.contrib.auth.decorators import login_required
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -124,5 +126,43 @@ def get_dealer_details(request, dealer_id):
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
-# ...
+# @login_required
+# @login_required
+def add_review(request, dealer_id):
+    if request.method == "POST":
+        # Construct the review dictionary
+        review = {
+            "time": datetime.utcnow().isoformat(),
+            "name": request.user.username,
+            "dealership": dealer_id,
+            "review": request.POST.get("review_text"),
+            "purchase": request.POST.get("purchase_choice"),
+            # Add other attributes as needed
+        }
+        
+        # Construct the JSON payload
+        json_payload = {
+            "review": review
+        }
+        
+        # Replace with your cloud function URL
+        url = "https://eu-de.functions.cloud.ibm.com/api/v1/namespaces/e2697c10-fad8-4932-ace9-4b378f6ff2ab/actions/dealership-package/post-review"
+        
+        # Replace with your actual API key
+        your_api_key = "QapFQN8xqkeu6zJ7sblsTVcs_eUNB0DTMWPmtQZPVgvM"
+        
+        # Call the post_request method to send the review
+        response_data = post_request(url, json_payload, dealerId=dealer_id, api_key=your_api_key)
+        
+        if response_data:
+            # You can customize the response message based on the response_data
+            response_message = "Review posted successfully!"
+        else:
+            response_message = "Failed to post review"
+        
+        # You can render a template with the response_message or redirect to a different page
+        return HttpResponse(response_message)
+    
+    # Return any initial form or template for review posting
+   # return render(request, 'djangoapp/add_review.html')
 
