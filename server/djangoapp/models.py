@@ -20,6 +20,31 @@ from django.utils.timezone import now
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car make object
 
+class CarMake(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+class CarModel(models.Model):
+    CAR_TYPES = (
+        ('sedan', 'Sedan'),
+        ('suv', 'SUV'),
+        ('wagon', 'Wagon'),
+        # Add more choices as needed
+    )
+
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    dealer_id = models.IntegerField()  # Refers to dealer ID in the cloudant database
+    car_type = models.CharField(max_length=10, choices=CAR_TYPES)
+    year = models.DateField()
+
+    # Add other fields as needed
+
+    def __str__(self):
+        return f"{self.car_make} - {self.name} ({self.year})"
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 
