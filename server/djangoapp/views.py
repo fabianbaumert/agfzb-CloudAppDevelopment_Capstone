@@ -136,6 +136,7 @@ def get_dealer_details(request, dealer_id):
 # @login_required
 # @login_required
 def add_review(request, dealer_id):
+<<<<<<< HEAD
     if request.method == "GET":
         # Query the cars associated with the dealer
         cars = Car.objects.filter(dealer=dealer_id)
@@ -149,13 +150,21 @@ def add_review(request, dealer_id):
         return render(request, "djangoapp/add_review.html", context)
     
     elif request.method == "POST":
+=======
+    if request.method == "POST":
+>>>>>>> 7d025300fd730e9f64692bf23e665da705cf8fb1
         # Construct the review dictionary
         review = {
             "time": datetime.utcnow().isoformat(),
             "name": request.user.username,
             "dealership": dealer_id,
+<<<<<<< HEAD
             "review": request.POST.get("content"),
             "purchase": request.POST.get("purchasecheck"),
+=======
+            "review": request.POST.get("review_text"),
+            "purchase": request.POST.get("purchase_choice"),
+>>>>>>> 7d025300fd730e9f64692bf23e665da705cf8fb1
             # Add other attributes as needed
         }
         
@@ -179,8 +188,13 @@ def add_review(request, dealer_id):
         else:
             response_message = "Failed to post review"
         
+<<<<<<< HEAD
         # Redirect user to the dealer details page with the review posted
         return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
+=======
+        # You can render a template with the response_message or redirect to a different page
+        return HttpResponse(response_message)
+>>>>>>> 7d025300fd730e9f64692bf23e665da705cf8fb1
     
     # Return any initial form or template for review posting
    # return render(request, 'djangoapp/add_review.html')
